@@ -26,6 +26,17 @@ def build_connectivity_map():
 neighbours = build_connectivity_map()
 
 
+def print_state(state):
+    print([(hole, color) for hole, color in enumerate(state) if color])
+    
+
+def next_color(color):
+    if color == "W":
+        return "B"
+    else:
+        return "W"
+
+
 def can_play(state, color, hole):
     if state[hole] is not None:
         return False
@@ -35,28 +46,24 @@ def can_play(state, color, hole):
     return True
 
 
-def possible_plays(state, color):
-    result = []
-    for hole in range(11):
-        if can_play(state, color, hole):
-            new_state = state.copy()
-            new_state[hole] = color
-            result.append(new_state)
-    return result
+def find_possible_holes(state, color):
+    return [hole for hole in range(11) if can_play(state, color, hole)]
 
 
-def print_state(state):
-    print([(hole, color) for hole, color in enumerate(state) if color])
+def generate_plays(state, color):
+    ph = find_possible_holes(state, color)
+    if not ph:
+        print(f"{color} loses")
+        print_state(state)
+        return
+    new_color = next_color(color)
+    for hole in possible_hole:
+        generate_plays(new_state, new_color)
 
 
 def main():
     state = ['W', None, None, None, None, 'B', None, None, 'W', 'B', None]
-    print_state(state)
-    for color in cycle(['W', 'B']):
-        plays = possible_plays(state, color)
-        for play in plays:
-            print_state(play)
-        return
+    generate_plays(state, 'W')
 
 
 if __name__ == '__main__':
